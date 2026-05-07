@@ -99,6 +99,24 @@ public class BuildingInfoController {
         return ResponseEntity.ok(Map.of("heatingPerCube", heating));
     }
 
+    /**
+     * Returns all rooms whose heating per m³ exceeds the given threshold.
+     *
+     * @param threshold the limit value for heating per m³
+     * @param building  the building structure in JSON
+     * @return JSON array of room objects exceeding the threshold
+     */
+    @PostMapping("/heating/exceeded")
+    public ResponseEntity<List<Room>> getRoomsExceedingHeating(
+            @RequestParam double threshold,
+            @RequestBody Building building) {
+        logger.debug("POST /api/building/heating/exceeded – threshold={}, building id={}",
+                threshold, building.getId());
+        List<Room> rooms = transformer.getRoomsExceedingHeatingThreshold(building, threshold);
+        logger.info("Found {} rooms exceeding heating threshold {}", rooms.size(), threshold);
+        return ResponseEntity.ok(rooms);
+    }
+
     // ── Level-level endpoints ──────────────────────────────────
 
     /**
