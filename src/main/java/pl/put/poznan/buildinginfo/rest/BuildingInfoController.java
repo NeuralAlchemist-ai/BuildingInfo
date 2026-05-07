@@ -51,6 +51,19 @@ public class BuildingInfoController {
         return ResponseEntity.ok(Map.of("cube", cube));
     }
 
+    /**
+     * Returns the average lighting power per m² for the building.
+     *
+     * @param building the building structure in JSON
+     * @return JSON: {@code {"lightPerArea": <value>}}
+     */
+    @PostMapping("/light")
+    public ResponseEntity<Map<String, Double>> getBuildingLightPerArea(@RequestBody Building building) {
+        logger.debug("POST /api/building/light – building id={}", building.getId());
+        double light = transformer.getLightPerArea(building);
+        return ResponseEntity.ok(Map.of("lightPerArea", light));
+    }
+
 // ── Level-level endpoints ──────────────────────────────────
 
     /**
@@ -90,6 +103,19 @@ public class BuildingInfoController {
         return ResponseEntity.ok(Map.of("cube", transformer.getCube(level.get())));
     }
 
+    /**
+     * Returns the average lighting power per m² for a specific level.
+     */
+    @PostMapping("/level/{levelId}/light")
+    public ResponseEntity<Map<String, Double>> getLevelLightPerArea(
+            @PathVariable int levelId,
+            @RequestBody Building building) {
+        logger.debug("POST /api/building/level/{}/light", levelId);
+        Optional<Level> level = transformer.findLevel(building, levelId);
+        if (level.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(Map.of("lightPerArea", transformer.getLightPerArea(level.get())));
+    }
+
 // ── Room-level endpoints ───────────────────────────────────
 
     /**
@@ -120,6 +146,19 @@ public class BuildingInfoController {
         Optional<Room> room = transformer.findRoom(building, roomId);
         if (room.isEmpty()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(Map.of("cube", transformer.getCube(room.get())));
+    }
+
+    /**
+     * Returns the lighting power per m² for a specific room.
+     */
+    @PostMapping("/room/{roomId}/light")
+    public ResponseEntity<Map<String, Double>> getRoomLightPerArea(
+            @PathVariable int roomId,
+            @RequestBody Building building) {
+        logger.debug("POST /api/building/room/{}/light", roomId);
+        Optional<Room> room = transformer.findRoom(building, roomId);
+        if (room.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(Map.of("lightPerArea", transformer.getLightPerArea(room.get())));
     }
 
 }
