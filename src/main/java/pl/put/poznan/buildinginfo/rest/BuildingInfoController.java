@@ -37,6 +37,20 @@ public class BuildingInfoController {
         return ResponseEntity.ok(Map.of("area", area));
     }
 
+    /**
+     * Returns the total volume (cubature) of the building in m³.
+     *
+     * @param building the building structure in JSON
+     * @return JSON: {@code {"cube": <value>}}
+     */
+    @PostMapping("/cube")
+    public ResponseEntity<Map<String, Double>> getBuildingCube(@RequestBody Building building) {
+        logger.debug("POST /api/building/cube – building id={}", building.getId());
+        double cube = transformer.getCube(building);
+        logger.info("Building {} cube = {} m³", building.getId(), cube);
+        return ResponseEntity.ok(Map.of("cube", cube));
+    }
+
 // ── Level-level endpoints ──────────────────────────────────
 
     /**
@@ -58,6 +72,24 @@ public class BuildingInfoController {
         }
         return ResponseEntity.ok(Map.of("area", transformer.getArea(level.get())));
     }
+
+    /**
+     * Returns the total volume of a specific level in m³.
+     *
+     * @param levelId  the id of the level to query
+     * @param building the building structure in JSON
+     * @return JSON: {@code {"cube": <value>}} or 404 if level not found
+     */
+    @PostMapping("/level/{levelId}/cube")
+    public ResponseEntity<Map<String, Double>> getLevelCube(
+            @PathVariable int levelId,
+            @RequestBody Building building) {
+        logger.debug("POST /api/building/level/{}/cube", levelId);
+        Optional<Level> level = transformer.findLevel(building, levelId);
+        if (level.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(Map.of("cube", transformer.getCube(level.get())));
+    }
+
 // ── Room-level endpoints ───────────────────────────────────
 
     /**
@@ -76,4 +108,18 @@ public class BuildingInfoController {
         if (room.isEmpty()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(Map.of("area", transformer.getArea(room.get())));
     }
+
+    /**
+     * Returns the volume of a specific room in m³.
+     */
+    @PostMapping("/room/{roomId}/cube")
+    public ResponseEntity<Map<String, Double>> getRoomCube(
+            @PathVariable int roomId,
+            @RequestBody Building building) {
+        logger.debug("POST /api/building/room/{}/cube", roomId);
+        Optional<Room> room = transformer.findRoom(building, roomId);
+        if (room.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(Map.of("cube", transformer.getCube(room.get())));
+    }
+
 }
