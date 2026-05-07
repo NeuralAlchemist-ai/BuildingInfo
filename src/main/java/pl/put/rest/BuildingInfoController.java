@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-RestController
+@RestController
 @RequestMapping("/api/building")
 public class BuildingInfoController {
 
