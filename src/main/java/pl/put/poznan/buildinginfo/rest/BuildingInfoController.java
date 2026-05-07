@@ -13,6 +13,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * REST controller exposing the Building Info API.
+ *
+ * <p>All endpoints accept a {@link Building} as a JSON request body and return
+ * computed statistics in JSON format. The building structure mirrors the data
+ * model described in the project specification:</p>
+ * <pre>
+ * {
+ *   "id": 1, "name": "Main Building",
+ *   "levels": [
+ *     { "id": 10, "name": "Ground Floor",
+ *       "rooms": [
+ *         { "id": 101, "name": "Room A", "area": 30.0, "cube": 75.0,
+ *           "heating": 1200.0, "light": 500.0 }
+ *       ]
+ *     }
+ *   ]
+ * }
+ * </pre>
+ *
+ * <p>Base path: {@code /api/building}</p>
+ */
 @RestController
 @RequestMapping("/api/building")
 public class BuildingInfoController {
@@ -64,7 +86,20 @@ public class BuildingInfoController {
         return ResponseEntity.ok(Map.of("lightPerArea", light));
     }
 
-// ── Level-level endpoints ──────────────────────────────────
+    /**
+     * Returns the average heating energy consumption per m³ for the building.
+     *
+     * @param building the building structure in JSON
+     * @return JSON: {@code {"heatingPerCube": <value>}}
+     */
+    @PostMapping("/heating")
+    public ResponseEntity<Map<String, Double>> getBuildingHeatingPerCube(@RequestBody Building building) {
+        logger.debug("POST /api/building/heating – building id={}", building.getId());
+        double heating = transformer.getHeatingPerCube(building);
+        return ResponseEntity.ok(Map.of("heatingPerCube", heating));
+    }
+
+    // ── Level-level endpoints ──────────────────────────────────
 
     /**
      * Returns the total floor area of a specific level in m².
@@ -116,7 +151,20 @@ public class BuildingInfoController {
         return ResponseEntity.ok(Map.of("lightPerArea", transformer.getLightPerArea(level.get())));
     }
 
-// ── Room-level endpoints ───────────────────────────────────
+    /**
+     * Returns the average heating per m³ for a specific level.
+     */
+    @PostMapping("/level/{levelId}/heating")
+    public ResponseEntity<Map<String, Double>> getLevelHeatingPerCube(
+            @PathVariable int levelId,
+            @RequestBody Building building) {
+        logger.debug("POST /api/building/level/{}/heating", levelId);
+        Optional<Level> level = transformer.findLevel(building, levelId);
+        if (level.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(Map.of("heatingPerCube", transformer.getHeatingPerCube(level.get())));
+    }
+
+    // ── Room-level endpoints ───────────────────────────────────
 
     /**
      * Returns the floor area of a specific room in m².
@@ -161,4 +209,16 @@ public class BuildingInfoController {
         return ResponseEntity.ok(Map.of("lightPerArea", transformer.getLightPerArea(room.get())));
     }
 
+    /**
+     * Returns the heating per m³ for a specific room.
+     */
+    @PostMapping("/room/{roomId}/heating")
+    public ResponseEntity<Map<String, Double>> getRoomHeatingPerCube(
+            @PathVariable int roomId,
+            @RequestBody Building building) {
+        logger.debug("POST /api/building/room/{}/heating", roomId);
+        Optional<Room> room = transformer.findRoom(building, roomId);
+        if (room.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(Map.of("heatingPerCube", transformer.getHeatingPerCube(room.get())));
+    }
 }
