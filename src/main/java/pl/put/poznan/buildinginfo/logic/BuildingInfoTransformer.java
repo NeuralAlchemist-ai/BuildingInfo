@@ -1,11 +1,11 @@
 package pl.put.poznan.buildinginfo.logic;
 
+import pl.put.poznan.buildinginfo.logic.visitor.HeatingThresholdVisitor;
 import pl.put.poznan.buildinginfo.model.Building;
 import pl.put.poznan.buildinginfo.model.Level;
 import pl.put.poznan.buildinginfo.model.Location;
 import pl.put.poznan.buildinginfo.model.Room;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,23 +79,17 @@ public class BuildingInfoTransformer {
      * Returns all rooms within a building whose heating energy consumption per m³
      * exceeds the given threshold.
      *
-     * <p>This is useful for identifying rooms with poor thermal efficiency
-     * that may benefit from infrastructure improvements.</p>
+     * <p>Delegates to {@link HeatingThresholdVisitor}, which traverses the
+     * Composite hierarchy via {@code accept} / {@code visit} double dispatch.</p>
      *
      * @param building  the building to search
      * @param threshold the maximum acceptable heating consumption per m³
      * @return list of rooms exceeding the threshold; never {@code null}
      */
     public List<Room> getRoomsExceedingHeatingThreshold(Building building, double threshold) {
-        List<Room> result = new ArrayList<>();
-        for (Level level : building.getLevels()) {
-            for (Room room : level.getRooms()) {
-                if (room.getHeatingPerCube() > threshold) {
-                    result.add(room);
-                }
-            }
-        }
-        return result;
+        HeatingThresholdVisitor visitor = new HeatingThresholdVisitor(threshold);
+        building.accept(visitor);
+        return visitor.getResult();
     }
 
     // ── Location lookup helpers ───────────────────────────────
