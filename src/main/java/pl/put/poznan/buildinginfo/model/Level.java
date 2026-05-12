@@ -104,4 +104,20 @@ public class Level implements Location {
     public void setRooms(List<Room> rooms) { this.rooms = rooms; }
 
     public void addRoom(Room room) { this.rooms.add(room); }
+
+    // ── Visitor ───────────────────────────────────────────────
+
+    /**
+     * Accepts a visitor. Level first propagates the call to all its rooms
+     * (post-order traversal), then calls {@code visitor.visit(this)}.
+     *
+     * @param visitor the visitor to accept
+     */
+    @Override
+    public void accept(LocationVisitor visitor) {
+        for (Room room : rooms) {
+            room.accept(visitor);
+        }
+        visitor.visit(this);
+    }
 }
