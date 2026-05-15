@@ -96,9 +96,8 @@ jobs:
     - name: Create GitHub Release with artifacts
       uses: softprops/action-gh-release@v2
       with:
-        # attach the application JARs and the zipped, unpacked Javadoc HTML
         files: |
-          release-assets/app.jar
+          release-assets/target-downloadable/app.jar
           release-assets/dock.zip
         tag_name: v${{ github.run_number }}
         draft: false
