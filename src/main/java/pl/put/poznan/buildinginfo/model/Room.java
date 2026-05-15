@@ -28,19 +28,8 @@ public class Room implements Location {
 
     // ── Constructors ──────────────────────────────────────────
 
-    /** Creates a new room with default values. */
     public Room() {}
 
-    /**
-     * Creates a new room with the given measurements.
-     *
-     * @param id      unique room identifier
-     * @param name    optional room name (may be null)
-     * @param area    floor area in m²
-     * @param cube    volume in m³
-     * @param heating heating energy consumption
-     * @param light   total installed lighting power in watts
-     */
     public Room(int id, String name, double area, double cube, double heating, double light) {
         this.id = id;
         this.name = name;
@@ -96,17 +85,11 @@ public class Room implements Location {
 
     // ── Setters (for JSON deserialization) ────────────────────
 
-    /** Sets the room id. */
     public void setId(int id) { this.id = id; }
-    /** Sets the room name. */
     public void setName(String name) { this.name = name; }
-    /** Sets the floor area in m². */
     public void setArea(double area) { this.area = area; }
-    /** Sets the volume in m³. */
     public void setCube(double cube) { this.cube = cube; }
-    /** Sets the heating energy consumption. */
     public void setHeating(double heating) { this.heating = heating; }
-    /** Sets the total installed lighting power in watts. */
     public void setLight(double light) { this.light = light; }
 
     // ── Visitor ───────────────────────────────────────────────
