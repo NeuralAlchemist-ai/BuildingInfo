@@ -20,7 +20,7 @@ echo "POST $BASE_URL/heating"
 curl -s -X POST -H "Content-Type: application/json" "$BASE_URL/heating" -d @${JSON_FILE} | jq || true
 
 echo "POST $BASE_URL/heating/exceeded?threshold=15"
-curl -s -G -X POST -H "Content-Type: application/json" --data-urlencode "threshold=15" "$BASE_URL/heating/exceeded" -d @${JSON_FILE} | jq || true
+curl -s -X POST -H "Content-Type: application/json" "$BASE_URL/heating/exceeded?threshold=15" -d @${JSON_FILE} | jq || true
 
 echo "POST $BASE_URL/level/10/area"
 curl -s -X POST -H "Content-Type: application/json" "$BASE_URL/level/10/area" -d @${JSON_FILE} | jq || true
