@@ -105,4 +105,21 @@ public class Building implements Location {
     public void setLevels(List<Level> levels) { this.levels = levels; }
 
     public void addLevel(Level level) { this.levels.add(level); }
+
+    // ── Visitor ───────────────────────────────────────────────
+
+    /**
+     * Accepts a visitor. Building first propagates the call to all its levels
+     * (which in turn propagate to their rooms — post-order traversal),
+     * then calls {@code visitor.visit(this)}.
+     *
+     * @param visitor the visitor to accept
+     */
+    @Override
+    public void accept(LocationVisitor visitor) {
+        for (Level level : levels) {
+            level.accept(visitor);
+        }
+        visitor.visit(this);
+    }
 }

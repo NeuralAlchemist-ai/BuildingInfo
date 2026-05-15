@@ -63,4 +63,16 @@ public interface Location {
      * @return heating per m³
      */
     double getHeatingPerCube();
+
+    /**
+     * Accepts a {@link LocationVisitor}, dispatching to the correct
+     * {@code visit} overload for this node type (double dispatch).
+     *
+     * <p>Composite nodes ({@link Building}, {@link Level}) must first
+     * propagate the call to all their children before calling
+     * {@code visitor.visit(this)}, ensuring post-order traversal.</p>
+     *
+     * @param visitor the visitor to accept
+     */
+    void accept(LocationVisitor visitor);
 }

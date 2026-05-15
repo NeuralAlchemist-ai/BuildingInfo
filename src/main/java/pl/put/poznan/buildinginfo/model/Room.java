@@ -91,4 +91,17 @@ public class Room implements Location {
     public void setCube(double cube) { this.cube = cube; }
     public void setHeating(double heating) { this.heating = heating; }
     public void setLight(double light) { this.light = light; }
+
+    // ── Visitor ───────────────────────────────────────────────
+
+    /**
+     * Accepts a visitor. As a leaf node, Room simply calls
+     * {@code visitor.visit(this)} — there are no children to traverse first.
+     *
+     * @param visitor the visitor to accept
+     */
+    @Override
+    public void accept(LocationVisitor visitor) {
+        visitor.visit(this);
+    }
 }
