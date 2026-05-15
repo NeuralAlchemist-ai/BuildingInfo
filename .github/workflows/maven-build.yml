@@ -62,7 +62,7 @@ jobs:
         path: release-assets
 
     - name: Create GitHub Release with artifacts
-      uses: softprops/action-gh-release@9d7c6e2af5f6b8b6f9d8f4c2a1b0e3d4c5f6a7b8
+      uses: softprops/action-gh-release@v2
       with:
         # attach the application JARs and the zipped, unpacked Javadoc HTML
         files: |
