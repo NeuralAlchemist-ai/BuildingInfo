@@ -12,6 +12,11 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 1
 fi
 
+if ! command -v curl >/dev/null 2>&1; then
+  echo "curl is required but was not found in PATH" >&2
+  exit 1
+fi
+
 FAILED=0
 
 run_request() {
