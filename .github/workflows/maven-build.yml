@@ -67,6 +67,20 @@ jobs:
         name: release-assets
         path: release-assets
 
+    - name: Unpack dock.zip
+      run: |
+        rm -rf ./dock || true
+        mkdir -p ./dock
+        unzip -o release-assets/dock.zip -d ./dock
+
+    - name: Deploy Javadoc to gh-pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        publish_dir: ./dock
+        publish_branch: gh-pages
+        allow_empty_commit: false
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Create GitHub Release with artifacts
       uses: softprops/action-gh-release@v2
       with:
