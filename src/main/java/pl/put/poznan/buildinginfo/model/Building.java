@@ -23,8 +23,15 @@ public class Building implements Location {
 
     // ── Constructors ──────────────────────────────────────────
 
+    /** Creates a new building with default values. */
     public Building() {}
 
+    /**
+     * Creates a new building with the given id and name.
+     *
+     * @param id   unique building identifier
+     * @param name optional building name (may be null)
+     */
     public Building(int id, String name) {
         this.id = id;
         this.name = name;
@@ -98,12 +105,17 @@ public class Building implements Location {
 
     // ── Accessors ─────────────────────────────────────────────
 
+    /** Returns the list of levels in this building. */
     public List<Level> getLevels() { return levels; }
 
+    /** Sets the building id. */
     public void setId(int id) { this.id = id; }
+    /** Sets the building name. */
     public void setName(String name) { this.name = name; }
+    /** Sets the list of levels in this building. */
     public void setLevels(List<Level> levels) { this.levels = levels; }
 
+    /** Adds a level to this building. */
     public void addLevel(Level level) { this.levels.add(level); }
 
     // ── Visitor ───────────────────────────────────────────────
