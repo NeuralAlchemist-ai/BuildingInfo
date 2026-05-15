@@ -1,0 +1,21 @@
+{
+  "id": 1,
+  "name": "Main Building",
+  "levels": [
+    {
+      "id": 10,
+      "name": "Ground Floor",
+      "rooms": [
+        { "id": 101, "name": "Room A", "area": 30.0, "cube": 75.0, "heating": 1200.0, "light": 500.0 },
+        { "id": 102, "name": "Room B", "area": 20.0, "cube": 50.0, "heating": 800.0,  "light": 300.0 }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "First Floor",
+      "rooms": [
+        { "id": 201, "name": "Room C", "area": 25.0, "cube": 60.0, "heating": 900.0,  "light": 400.0 }
+      ]
+    }
+  ]
+}

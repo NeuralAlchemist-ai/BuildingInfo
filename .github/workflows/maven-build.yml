@@ -21,5 +21,19 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+    - name: Build with Maven (package + javadoc)
+      run: mvn -B package javadoc:jar --file pom.xml
+
+    - name: Create GitHub Release with artifacts
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      uses: softprops/action-gh-release@v1
+      with:
+        # attach both the application JAR and the generated javadoc JAR
+        files: |
+          target/building-info-*.jar
+          target/*-javadoc.jar
+        tag_name: v${{ github.run_number }}
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
