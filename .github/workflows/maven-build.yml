@@ -29,28 +29,40 @@ jobs:
     - name: Build with Maven (package + javadoc)
       run: mvn -B package javadoc:jar --file pom.xml
 
-    # Javadoc will be extracted directly into `dock` below; no intermediate
-    # unpacking to `target/site/apidocs` is necessary here.
 
     - name: Prepare dock folder and downloadable jars
       run: |
+        set -euo pipefail
         rm -rf ./dock || true
         mkdir -p ./dock
-        # extract apidocs into repo-root dock folder
-        unzip -o target/building-info-0.1-javadoc.jar -d ./dock
-        # create target-downloadable and copy application jars there
+        # extract any javadoc jar(s) into repo-root dock folder
+        shopt -s nullglob || true
+        for f in target/*-javadoc.jar; do
+          echo "Unzipping $f"
+          unzip -o "$f" -d ./dock
+        done
+        # create target-downloadable and copy the application jar there
         rm -rf target-downloadable || true
         mkdir -p target-downloadable
-        cp target/*.jar target-downloadable/ || true
+        app_jar="$(find target -maxdepth 1 -type f -name '*.jar' ! -name '*-javadoc.jar' ! -name '*-sources.jar' | head -n 1)"
+        if [ -z "${app_jar}" ]; then
+          echo "No application JAR was found in target/" >&2
+          ls -la target || true
+          exit 1
+        fi
+        cp -v "${app_jar}" target-downloadable/app.jar
         # zip dock for release attachment convenience
         (cd ./dock && zip -qr ../dock.zip .)
+        # show what will be uploaded
+        ls -la target-downloadable || true
+        ls -la dock || true
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: release-assets
         path: |
-          target-downloadable/*.jar
+          target-downloadable/app.jar
           dock.zip
 
   release:
@@ -86,7 +98,7 @@ jobs:
       with:
         # attach the application JARs and the zipped, unpacked Javadoc HTML
         files: |
-          release-assets/*.jar
+          release-assets/app.jar
           release-assets/dock.zip
         tag_name: v${{ github.run_number }}
         draft: false
