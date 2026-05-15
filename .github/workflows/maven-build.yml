@@ -33,7 +33,7 @@ jobs:
       with:
         # attach both the application JAR and the generated javadoc JAR
         files: |
-          target/building-info-*.jar
+          target/building-info-!(*-javadoc).jar
           target/*-javadoc.jar
         tag_name: v${{ github.run_number }}
         draft: false
