@@ -6,9 +6,14 @@ on:
   pull_request:
     branches: [ "main", "master" ]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
     - name: Checkout code
@@ -24,14 +29,58 @@ jobs:
     - name: Build with Maven (package + javadoc)
       run: mvn -B package javadoc:jar --file pom.xml
 
-    - name: Create GitHub Release with artifacts
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-      uses: softprops/action-gh-release@v1
+    - name: Unpack Javadoc archive
+      run: |
+        mkdir -p target/site/apidocs
+        unzip -o target/building-info-0.1-javadoc.jar -d target/site/apidocs
+
+    - name: Zip unpacked Javadoc
+      run: |
+        cd target/site
+        zip -qr ../apidocs.zip apidocs
+
+    - name: Prepare dock folder and downloadable jars
+      run: |
+        rm -rf ./dock || true
+        mkdir -p ./dock
+        # extract apidocs into repo-root dock folder
+        unzip -o target/building-info-0.1-javadoc.jar -d ./dock
+        # create target-downloadable and copy application jars there
+        rm -rf target-downloadable || true
+        mkdir -p target-downloadable
+        cp target/*.jar target-downloadable/ || true
+        # zip dock for release attachment convenience
+        (cd ./dock && zip -qr ../dock.zip .)
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
       with:
-        # attach both the application JAR and the generated javadoc JAR
+        name: release-assets
+        path: |
+          target-downloadable/*.jar
+          dock.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    permissions:
+      contents: write
+
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: release-assets
+        path: release-assets
+
+    - name: Create GitHub Release with artifacts
+      uses: softprops/action-gh-release@v2
+      with:
+        # attach the application JARs and the zipped, unpacked Javadoc HTML
         files: |
-          target/building-info-*.jar
-          target/*-javadoc.jar
+          release-assets/*.jar
+          release-assets/dock.zip
         tag_name: v${{ github.run_number }}
         draft: false
         prerelease: false
