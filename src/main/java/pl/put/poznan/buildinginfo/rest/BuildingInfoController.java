@@ -158,6 +158,10 @@ public class BuildingInfoController {
 
     /**
      * Returns the average lighting power per m² for a specific level.
+     *
+     * @param levelId  the id of the level to query
+     * @param building the building structure in JSON
+     * @return JSON: {@code {"lightPerArea": <value>}} or 404 if level not found
      */
     @PostMapping("/level/{levelId}/light")
     public ResponseEntity<Map<String, Double>> getLevelLightPerArea(
@@ -171,6 +175,10 @@ public class BuildingInfoController {
 
     /**
      * Returns the average heating per m³ for a specific level.
+     *
+     * @param levelId  the id of the level to query
+     * @param building the building structure in JSON
+     * @return JSON: {@code {"heatingPerCube": <value>}} or 404 if level not found
      */
     @PostMapping("/level/{levelId}/heating")
     public ResponseEntity<Map<String, Double>> getLevelHeatingPerCube(
@@ -203,6 +211,10 @@ public class BuildingInfoController {
 
     /**
      * Returns the volume of a specific room in m³.
+     *
+     * @param roomId   the id of the room to query
+     * @param building the building structure in JSON
+     * @return JSON: {@code {"cube": <value>}} or 404 if room not found
      */
     @PostMapping("/room/{roomId}/cube")
     public ResponseEntity<Map<String, Double>> getRoomCube(
@@ -216,6 +228,10 @@ public class BuildingInfoController {
 
     /**
      * Returns the lighting power per m² for a specific room.
+     *
+     * @param roomId   the id of the room to query
+     * @param building the building structure in JSON
+     * @return JSON: {@code {"lightPerArea": <value>}} or 404 if room not found
      */
     @PostMapping("/room/{roomId}/light")
     public ResponseEntity<Map<String, Double>> getRoomLightPerArea(
@@ -229,6 +245,10 @@ public class BuildingInfoController {
 
     /**
      * Returns the heating per m³ for a specific room.
+     *
+     * @param roomId   the id of the room to query
+     * @param building the building structure in JSON
+     * @return JSON: {@code {"heatingPerCube": <value>}} or 404 if room not found
      */
     @PostMapping("/room/{roomId}/heating")
     public ResponseEntity<Map<String, Double>> getRoomHeatingPerCube(

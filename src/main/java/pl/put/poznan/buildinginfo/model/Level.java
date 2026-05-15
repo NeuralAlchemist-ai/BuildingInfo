@@ -22,8 +22,15 @@ public class Level implements Location {
 
     // ── Constructors ──────────────────────────────────────────
 
+    /** Creates a new level with default values. */
     public Level() {}
 
+    /**
+     * Creates a new level with the given id and name.
+     *
+     * @param id   unique level identifier
+     * @param name optional level name (may be null)
+     */
     public Level(int id, String name) {
         this.id = id;
         this.name = name;
@@ -97,12 +104,17 @@ public class Level implements Location {
 
     // ── Accessors ─────────────────────────────────────────────
 
+    /** Returns the list of rooms on this level. */
     public List<Room> getRooms() { return rooms; }
 
+    /** Sets the level id. */
     public void setId(int id) { this.id = id; }
+    /** Sets the level name. */
     public void setName(String name) { this.name = name; }
+    /** Sets the list of rooms on this level. */
     public void setRooms(List<Room> rooms) { this.rooms = rooms; }
 
+    /** Adds a room to this level. */
     public void addRoom(Room room) { this.rooms.add(room); }
 
     // ── Visitor ───────────────────────────────────────────────
