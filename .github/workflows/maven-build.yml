@@ -55,7 +55,6 @@ jobs:
         # attach both the application JAR and the generated javadoc JAR
         files: |
           *.jar
-          *-javadoc.jar
         tag_name: v${{ github.run_number }}
         draft: false
         prerelease: false
