@@ -5,13 +5,15 @@ on:
     branches: [ "main", "master" ]
   pull_request:
     branches: [ "main", "master" ]
-
+    
 permissions:
   contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
     - name: Checkout code
@@ -27,16 +29,33 @@ jobs:
     - name: Build with Maven (package + javadoc)
       run: mvn -B package javadoc:jar --file pom.xml
 
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: jars
+        path: |
+          target/*.jar
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    permissions:
+      contents: write
+
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: jars
+
     - name: Create GitHub Release with artifacts
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-      permissions:
-        contents: write
       uses: softprops/action-gh-release@v1
       with:
         # attach both the application JAR and the generated javadoc JAR
         files: |
-          target/building-info-!(*-javadoc).jar
-          target/*-javadoc.jar
+          *.jar
+          *-javadoc.jar
         tag_name: v${{ github.run_number }}
         draft: false
         prerelease: false
