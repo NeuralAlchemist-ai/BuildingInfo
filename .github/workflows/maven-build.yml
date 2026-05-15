@@ -29,15 +29,8 @@ jobs:
     - name: Build with Maven (package + javadoc)
       run: mvn -B package javadoc:jar --file pom.xml
 
-    - name: Unpack Javadoc archive
-      run: |
-        mkdir -p target/site/apidocs
-        unzip -o target/building-info-0.1-javadoc.jar -d target/site/apidocs
-
-    - name: Zip unpacked Javadoc
-      run: |
-        cd target/site
-        zip -qr ../apidocs.zip apidocs
+    # Javadoc will be extracted directly into `dock` below; no intermediate
+    # unpacking to `target/site/apidocs` is necessary here.
 
     - name: Prepare dock folder and downloadable jars
       run: |

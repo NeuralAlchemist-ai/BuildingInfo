@@ -26,11 +26,11 @@ jobs:
       - name: Build Javadoc
         run: mvn -B javadoc:javadoc
 
-      - name: Copy generated javadoc into docks folder
+      - name: Copy generated javadoc into dock folder
         run: |
-          rm -rf ./docks || true
-          mkdir -p ./docks
-          cp -r target/site/apidocs/* ./docks/
+          rm -rf ./dock || true
+          mkdir -p ./dock
+          cp -r target/site/apidocs/* ./dock/
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3

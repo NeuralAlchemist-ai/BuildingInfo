@@ -42,5 +42,11 @@ release.properties
 *.iml
 
 # Local environment
+.venv/
 .env
 .env.local
+
+# Generated docs and downloadable artifacts created by CI/local scripts
+dock/
+dock.zip
+target-downloadable/
