@@ -13,3 +13,7 @@ Data structure:
   - cube = room volume in m^3
   - heating = level of heating energy consumption (float)
   - light – total lighting power
+
+
+Product Backlog:
+https://docs.google.com/spreadsheets/d/1TCnGaXq1viClncGGU5jWLDaRmE-lp5yPhdDT0rwDYWg/edit?usp=sharing
