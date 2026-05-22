@@ -1,0 +1,146 @@
+/* BuildingInfo Workbench – JavaFX stylesheet */
+
+.root {
+    -fx-font-family: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: #fafbfc;
+}
+
+/* ── Typography helpers ─────────────────────────────────── */
+
+.mono {
+    -fx-font-family: "IBM Plex Mono", "Courier New", monospace;
+}
+
+.eyebrow {
+    -fx-font-size: 10.5px;
+    -fx-text-fill: #7c8497;
+}
+
+/* ── ScrollPane chrome removal ──────────────────────────── */
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .scroll-bar:vertical {
+    -fx-pref-width: 6px;
+}
+
+.scroll-pane > .scroll-bar:horizontal {
+    -fx-pref-height: 6px;
+}
+
+/* ── TextField defaults ─────────────────────────────────── */
+
+.text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 2 4 2 4;
+}
+
+.text-field:focused {
+    -fx-background-color: #eef4f9;
+    -fx-border-color: #3d7da6;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+}
+
+/* ── TextArea ───────────────────────────────────────────── */
+
+.text-area {
+    -fx-background-color: #f3f4f6;
+    -fx-border-color: transparent;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+.text-area .content {
+    -fx-background-color: #f3f4f6;
+    -fx-background-radius: 6;
+}
+
+/* ── Buttons ────────────────────────────────────────────── */
+
+.button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-opacity: 0.85;
+}
+
+/* ── ToggleButton (pills) ───────────────────────────────── */
+
+.toggle-button {
+    -fx-background-color: #eef0f3;
+    -fx-text-fill: #56607a;
+    -fx-background-radius: 999;
+    -fx-padding: 4 12 4 12;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.toggle-button:selected {
+    -fx-background-color: #1f2531;
+    -fx-text-fill: white;
+}
+
+/* ── Slider (heating threshold) ─────────────────────────── */
+
+.slider .track {
+    -fx-background-color: #dde0e6;
+    -fx-pref-height: 4px;
+    -fx-background-radius: 2;
+}
+
+.slider .thumb {
+    -fx-background-color: #d68b3a;
+    -fx-background-radius: 999;
+    -fx-pref-width: 14px;
+    -fx-pref-height: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0, 0, 1);
+}
+
+.slider:focused .thumb {
+    -fx-background-color: #c07030;
+}
+
+/* ── ComboBox ───────────────────────────────────────────── */
+
+.combo-box {
+    -fx-background-color: #eef0f3;
+    -fx-border-color: #dde0e6;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 0 4 0 4;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #1f2531;
+    -fx-font-size: 12px;
+}
+
+/* ── CheckBox ───────────────────────────────────────────── */
+
+.check-box .box {
+    -fx-background-color: #eef0f3;
+    -fx-border-color: #dde0e6;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #3d7da6;
+    -fx-border-color: #3d7da6;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
