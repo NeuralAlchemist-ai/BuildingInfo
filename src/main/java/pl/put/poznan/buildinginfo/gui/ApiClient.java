@@ -47,7 +47,7 @@ public class ApiClient {
                 .whenComplete((resp, err) -> Platform.runLater(() -> {
                     if (err != null || resp == null) {
                         state.setOffline(true);
-                        state.setLastResponse("// Could not reach " + state.apiBaseUrl);
+                        state.setLastResponse("// Could not reach " + state.getApiBaseUrl());
                     } else {
                         state.setOffline(false);
                         state.setLastResponse(prettyPrint(resp.body()));
@@ -59,7 +59,7 @@ public class ApiClient {
     }
 
     private String buildUrl(AppState state) {
-        String base = state.apiBaseUrl;
+        String base = state.getApiBaseUrl();
         AppState.Endpoint ep = state.getEndpoint();
         AppState.Scope scope = state.getScope();
 

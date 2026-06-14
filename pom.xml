@@ -55,6 +55,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>pl.put.poznan.buildinginfo.gui.BuildingInfoGui</mainClass>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.openjfx</groupId>

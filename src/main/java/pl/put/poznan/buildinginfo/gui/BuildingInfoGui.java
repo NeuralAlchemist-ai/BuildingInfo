@@ -10,13 +10,32 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.boot.web.context.WebServerApplicationContext;
+import pl.put.poznan.buildinginfo.app.BuildingInfoApplication;
 import pl.put.poznan.buildinginfo.model.Building;
 
 public class BuildingInfoGui extends Application {
 
+    private ConfigurableApplicationContext springContext;
+    private String apiBaseUrl = "http://localhost:8080";
+
+    @Override
+    public void init() {
+        springContext = SpringApplication.run(
+                BuildingInfoApplication.class,
+                "--server.port=0",
+                "--spring.main.web-application-type=servlet"
+        );
+        if (springContext instanceof WebServerApplicationContext webCtx && webCtx.getWebServer() != null) {
+            apiBaseUrl = "http://localhost:" + webCtx.getWebServer().getPort();
+        }
+    }
+
     @Override
     public void start(Stage stage) {
-        AppState state = new AppState();
+        AppState state = new AppState(apiBaseUrl);
         ApiClient api = new ApiClient();
 
         WorkspacePane workspace = new WorkspacePane(state, api);
@@ -39,6 +58,13 @@ public class BuildingInfoGui extends Application {
         stage.setTitle("BuildingInfo · API Workbench");
         stage.setScene(scene);
         stage.show();
+    }
+
+    @Override
+    public void stop() {
+        if (springContext != null) {
+            springContext.close();
+        }
     }
 
     private HBox buildTopBar(AppState state) {
@@ -69,7 +95,7 @@ public class BuildingInfoGui extends Application {
         // Server status
         Label dot = new Label("●");
         dot.setStyle("-fx-font-size: 10px; -fx-text-fill: #3ea389;");
-        Label serverLabel = new Label("localhost:8080");
+        Label serverLabel = new Label(apiBaseUrl.replace("http://", ""));
         serverLabel.setStyle("-fx-font-family: 'IBM Plex Mono'; -fx-font-size: 11.5px; -fx-text-fill: #56607a;");
 
         // Reset button

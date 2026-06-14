@@ -23,10 +23,15 @@ public class AppState {
     private final StringProperty lastResponse = new SimpleStringProperty("");
     private final BooleanProperty loading = new SimpleBooleanProperty(false);
     private final BooleanProperty offline = new SimpleBooleanProperty(false);
-    public final String apiBaseUrl = "http://localhost:8080";
+    private String apiBaseUrl = "http://localhost:8080";
 
     public AppState() {
         this.building = makeEmptyBuilding();
+    }
+
+    public AppState(String apiBaseUrl) {
+        this();
+        this.apiBaseUrl = apiBaseUrl;
     }
 
     public Building makeEmptyBuilding() {
@@ -63,6 +68,9 @@ public class AppState {
     public BooleanProperty offlineProperty() { return offline; }
     public boolean isOffline() { return offline.get(); }
     public void setOffline(boolean b) { offline.set(b); }
+
+    public String getApiBaseUrl() { return apiBaseUrl; }
+    public void setApiBaseUrl(String apiBaseUrl) { this.apiBaseUrl = apiBaseUrl; }
 
     public Building makeSeedBuilding() {
         Building b = new Building(1, "Block C");

@@ -11,7 +11,10 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: write
 
@@ -20,11 +23,11 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Set version in pom.xml
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && matrix.os == 'ubuntu-latest'
       run: mvn versions:set -DnewVersion=${{ github.run_number }} -DgenerateBackupPoms=false
 
     - name: Commit updated pom.xml
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && matrix.os == 'ubuntu-latest'
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -39,11 +42,17 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Build with Maven (package + javadoc)
+    - name: Build with Maven (package + javadoc on Linux)
+      if: matrix.os == 'ubuntu-latest'
       run: mvn -B package javadoc:jar --file pom.xml
+
+    - name: Build with Maven (package on macOS)
+      if: matrix.os == 'macos-latest'
+      run: mvn -B package --file pom.xml
 
 
     - name: Prepare dock folder and downloadable jars
+      if: matrix.os == 'ubuntu-latest'
       run: |
         set -euo pipefail
         rm -rf ./dock || true
@@ -63,20 +72,44 @@ jobs:
           ls -la target || true
           exit 1
         fi
-        cp -v "${app_jar}" target-downloadable/app.jar
+        cp -v "${app_jar}" "target-downloadable/app-${{ matrix.os }}.jar"
         # zip dock for release attachment convenience
         (cd ./dock && zip -qr ../dock.zip .)
         # show what will be uploaded
         ls -la target-downloadable || true
         ls -la dock || true
 
-    - name: Upload build artifacts
+    - name: Prepare downloadable jar on macOS
+      if: matrix.os == 'macos-latest'
+      run: |
+        set -euo pipefail
+        rm -rf target-downloadable || true
+        mkdir -p target-downloadable
+        app_jar="$(find target -maxdepth 1 -type f -name '*.jar' ! -name '*-javadoc.jar' ! -name '*-sources.jar' | head -n 1)"
+        if [ -z "${app_jar}" ]; then
+          echo "No application JAR was found in target/" >&2
+          ls -la target || true
+          exit 1
+        fi
+        cp -v "${app_jar}" "target-downloadable/app-${{ matrix.os }}.jar"
+        ls -la target-downloadable || true
+
+    - name: Upload Linux build artifacts
+      if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v4
       with:
-        name: release-assets
+        name: release-assets-${{ matrix.os }}
         path: |
-          target-downloadable/app.jar
+          target-downloadable/*.jar
           dock.zip
+
+    - name: Upload macOS build artifacts
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-assets-${{ matrix.os }}
+        path: |
+          target-downloadable/*.jar
 
   release:
     needs: build
@@ -89,8 +122,9 @@ jobs:
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
-        name: release-assets
+        pattern: release-assets-*
         path: release-assets
+        merge-multiple: true
 
     - name: Unpack dock.zip
       run: |
@@ -110,7 +144,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: |
-          release-assets/target-downloadable/app.jar
+          release-assets/*.jar
           release-assets/dock.zip
         tag_name: ${{ github.run_number }}
         draft: false
