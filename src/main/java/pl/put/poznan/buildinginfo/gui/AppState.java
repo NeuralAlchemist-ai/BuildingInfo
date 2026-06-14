@@ -34,6 +34,7 @@ public class AppState {
         this.apiBaseUrl = apiBaseUrl;
     }
 
+    // Creates a minimal building instance used when the GUI starts or resets.
     public Building makeEmptyBuilding() {
         return new Building(1, "Building");
     }
@@ -72,6 +73,7 @@ public class AppState {
     public String getApiBaseUrl() { return apiBaseUrl; }
     public void setApiBaseUrl(String apiBaseUrl) { this.apiBaseUrl = apiBaseUrl; }
 
+    // Builds a small sample tree with levels and rooms for quick demo data.
     public Building makeSeedBuilding() {
         Building b = new Building(1, "Block C");
 

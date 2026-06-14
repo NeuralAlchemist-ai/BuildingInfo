@@ -23,6 +23,7 @@ public class BuildingInfoGui extends Application {
 
     @Override
     public void init() {
+        // Start the REST backend inside the same process so the GUI can talk to it.
         springContext = SpringApplication.run(
                 BuildingInfoApplication.class,
                 "--server.port=0",
@@ -35,6 +36,7 @@ public class BuildingInfoGui extends Application {
 
     @Override
     public void start(Stage stage) {
+        // Build the editable GUI around the selected backend base URL.
         AppState state = new AppState(apiBaseUrl);
         ApiClient api = new ApiClient();
 
@@ -62,6 +64,7 @@ public class BuildingInfoGui extends Application {
 
     @Override
     public void stop() {
+        // Close the embedded Spring context when the window is closed.
         if (springContext != null) {
             springContext.close();
         }

@@ -16,6 +16,7 @@ public class ApiClient {
             .build();
     private final ObjectMapper mapper = new ObjectMapper();
 
+    // Sends the current building JSON to the selected endpoint and updates the UI.
     public void fireAndUpdate(AppState state, Runnable onDone) {
         state.setLoading(true);
         state.markDirty();
