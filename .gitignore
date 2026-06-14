@@ -45,6 +45,7 @@ release.properties
 .venv/
 .env
 .env.local
+.claude/
 
 # Generated docs and downloadable artifacts created by CI/local scripts
 dock/
