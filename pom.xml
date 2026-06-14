@@ -12,7 +12,7 @@
 
     <groupId>pl.put.poznan</groupId>
     <artifactId>building-info</artifactId>
-    <version>50</version>
+    <version>51</version>
     <name>Building Info</name>
     <description>REST API for querying building parameters at room, floor and building level</description>
 
